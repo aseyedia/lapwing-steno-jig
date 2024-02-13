@@ -17,15 +17,21 @@
 <body>
 
 <div id="form" class="wrapper">
-    <h1>Steno Jig with <a href="https://lapwing.aerick.ca/">Lapwing</a> hints</h1>
+	<h1>Steno Jig with <a href="https://lapwing.aerick.ca/">Lapwing</a> hints</h1>
 
 	<div class="form-section">
 		<div class="caption"><strong>Settings</strong> that apply to all drills</div><br>
 
 		<div>
-            <label><input type="radio" name="hints" value="1" checked>Show <strong>Lapwing</strong> hints</label>
+			<label><input type="radio" name="hints" value="1" checked>Show <strong>Lapwing</strong> hints</label>
 			<label><input type="radio" name="hints" value="fail">Hint on fail</label>
 			<label><input type="radio" name="hints" value="">No hints</label>
+		</div><br>
+
+		<div>
+			Hint style:
+			<label><input type="radio" name="hint_style" value="writeout" checked>Write-out</label>
+			<label><input type="radio" name="hint_style" value="brief">Briefs</label>
 		</div><br>
 
 		<div name="live_wpm">
@@ -274,7 +280,7 @@ function runExercise(fields) {
 			if(fields.floating_hints) {
 				strokes.style.position = 'fixed';
 			}
-			var translations = TypeJig.shortestTranslations(TypeJig.Translations.Plover);
+			var translations = fields.hint_style === "brief" ? TypeJig.shortestTranslations(TypeJig.Translations.Plover) : TypeJig.longestTranslations(TypeJig.Translations.Plover);
 			var hints = new StenoDisplay(strokes, translations, true);
 		}
 		var options = fields;
@@ -285,11 +291,13 @@ function runExercise(fields) {
 }
 
 function getSettings(evt) {
-	const hintButtons = document.getElementsByName('hints')
-	for(var radio of hintButtons) {
-		if(radio.checked) {
-			hiddenField(this, 'hints', radio.value)
-			break
+	for (const key of ["hints", "hint_style"]) {
+		const hintButtons = document.getElementsByName(key)
+		for(var radio of hintButtons) {
+			if(radio.checked) {
+				hiddenField(this, key, radio.value)
+				break
+			}
 		}
 	}
 

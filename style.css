@@ -210,4 +210,8 @@ a, a:visited {
 
 #strokes .hide { display: none; }
 
-#strokes table { display: inline-block; empty-cells: hide; }
+#strokes table {
+	display: inline-block;
+	empty-cells: hide;
+	margin-bottom: 1ex;
+}

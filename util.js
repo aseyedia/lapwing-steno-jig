@@ -55,14 +55,14 @@ function new_rng(seed_txt) {
     }
 }
 
-function initializeHints(hints, floating_hints) {
+function initializeHints(hints, floating_hints, hint_style) {
     if (!hints) return null;
 
     var strokes = document.getElementById('strokes');
     if (floating_hints) {
         strokes.style.position = 'fixed';
     }
-    var translations = TypeJig.shortestTranslations(TypeJig.Translations.Plover);
+    var translations = hint_style === "brief" ? TypeJig.shortestTranslations(TypeJig.Translations.Plover) : TypeJig.longestTranslations(TypeJig.Translations.Plover);
     return new StenoDisplay(strokes, translations, true);
 }
 
@@ -130,7 +130,7 @@ function loadExercisePage(initialize) {
 
 	const pg = initialize(fields)
 	pg.options = {...fields, ...pg.options}
-	pg.options.hintObj = initializeHints(fields.hints, fields.floatingHints)
+	pg.options.hintObj = initializeHints(fields.hints, fields.floatingHints, fields.hint_style)
 	const jig = generateExercise(pg.generate, pg.options)
 
 	another.addEventListener('click', function(evt) {

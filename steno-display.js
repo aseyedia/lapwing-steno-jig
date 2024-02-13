@@ -44,9 +44,10 @@ StenoDisplay.prototype.update = function(text, x, y) {
 }
 
 StenoDisplay.prototype.lookup = function(text) {
-	var strokes = this.lookupEntry(text);
-	if(!strokes) {
+	var strokes = this.lookupEntry(text.toLowerCase());
+	if (strokes) {
 		text = text.toLowerCase();
+	} else {
 		strokes = this.lookupEntry(text);
 	}
 	if(!strokes) {
@@ -161,7 +162,7 @@ StenoDisplay.prototype.show = function () {
 
 StenoDisplay.Stroke = function(container) {
 	this.separator = document.createElement('span');
-	this.separator.appendChild(document.createTextNode('/'));
+	this.separator.appendChild(document.createTextNode(''));
 	this.separator.className = 'big-slash';
 	container.appendChild(this.separator);
 	this.keys = document.createElement('table');
@@ -173,7 +174,7 @@ StenoDisplay.Stroke = function(container) {
 	numCell.appendChild(numBar);
 	num.appendChild(numCell);
 	this.keys.appendChild(num);
-	
+
 	var upper = document.createElement('tr');
 	var lower = document.createElement('tr');
 	var vowel = document.createElement('tr');
@@ -234,7 +235,7 @@ StenoDisplay.Stroke.prototype.clear = function() {
 
 StenoDisplay.Stroke.prototype.set = function(stroke, separator) {
 	this.clear();
-	this.separator.firstChild.nodeValue = separator || '';
+	this.separator.firstChild.nodeValue = /* separator || */ '';
 	var steno = pseudoStrokeToSteno(stroke);
 	var left = steno[0], vowel = steno[1], right = steno[2];
 	for(var i=0; i<left.length; ++i) {
