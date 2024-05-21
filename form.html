@@ -60,15 +60,15 @@
 	<div class="form-section">
 		<div class="caption">Custom <strong>text</strong></div>
 
-		<form class="drill-options" id="custom" action="form.html">
+    		<form class="drill-options" id="custom" action="form.html">
+		        <textarea name="drill"></textarea><br>
+		        <input type="checkbox" name="type" value="shuffled"> Shuffle words.<br>
+		        Or <input type="checkbox" name="shuffleLines" value="shuffled"> shuffle lines.<br>
+		        Repeat <input type="number" name="repeat" min="1" max="100" step="1" value="1"> times.<br>
+		        <input type="checkbox" id="normalize" name="normalize" value="1"> Normalize text (quotes, hyphens, bullets, ellipsis, etc. to ASCII equivalents)<br>
 
-			<textarea name="drill"></textarea><br>
-			<input type="checkbox" name="type" value="shuffled"> Shuffle words.<br>
-			Or <input type="checkbox" name="shuffleLines" value="shuffled"> shuffle lines.<br>
-			Repeat <input type="number" name="repeat" min="1" max="100" step="1" value="1"> times.<br>
-
-			<button>Start Drill &rarr;</button>
-		</form>
+	        	<button>Start Drill &rarr;</button>
+    		</form>
 	</div>
 
 	<div class="form-section">
@@ -84,24 +84,24 @@
 	</div>
 
 
-	<div class="form-section">
-		<div class="caption">Most used <strong>words</strong> (once, in random order)</div>
+    <div class="form-section">
+        <div class="caption">Most used <strong>words</strong> (once, in random order)</div>
 
-		<form id="most-used" class="drill-options" action="form.html">
-			<input type="hidden" name="drill" value="NGSL_all_forms">
-			<input type="hidden" name="type" value="shuffled">
+        <form id="most-used" class="drill-options" action="form.html">
+            <input type="hidden" name="drill" value="NGSL_all_forms">
+            <input type="hidden" name="type" value="shuffled">
 
-			Drill
-			<input type="number" name="count" value="100" min="25" max="1000" step="25">
-			words from the range
-			<input type="number" name="first" value="0" min="0" max="8400" step="25">
-			to
-			<input type="number" name="last" value="100" min="100" max="1000" step="25">
-			<br>
+            Drill
+            <input type="number" name="count" value="100" min="25" max="1000" step="25">
+            words from the range
+            <input type="number" name="first" value="0" min="0" max="8400" step="25">
+            to
+            <input type="number" name="last" value="100" min="100" max="1000" step="25">
+            <br>
 
-			<button>Start Drill &rarr;</button>
-		</form>
-	</div>
+            <button>Start Drill &rarr;</button>
+        </form>
+    </div>
 
 	<div class="form-section">
 		<div class="caption"><strong>Sentences</strong> extracted from <a href="https://www.gutenberg.org/">Project Gutenberg</a></div>
@@ -315,25 +315,73 @@ function getSettings(evt) {
 	hiddenField(this, 'alternate', alternate.value)
 }
 
+
+function normalizeToASCII(input) {
+    return input
+        .replace(/[“”]/g, '"')    // Normalize double quotes
+        .replace(/[‘’]/g, "'")    // Normalize single quotes
+        .replace(/–/g, '-')       // Normalize en-dashes to hyphens
+        .replace(/—/g, '-')       // Normalize em-dashes to hyphens
+        .replace(/…/g, '...')     // Normalize ellipsis to three dots
+        .replace(/•/g, '*')       // Normalize bullet points to asterisks
+        .replace(/é/g, 'e')       // Accented e
+        .replace(/è/g, 'e')       // Accented e
+        .replace(/á/g, 'a')       // Accented a
+        .replace(/í/g, 'i')       // Accented i
+        .replace(/ó/g, 'o')       // Accented o
+        .replace(/ú/g, 'u')       // Accented u
+        .replace(/ñ/g, 'n')       // Spanish n
+        .replace(/ç/g, 'c')       // French c
+        .replace(/ü/g, 'u')       // German u
+        .replace(/ß/g, 'ss')      // German ss
+        .replace(/Æ/g, 'AE')      // AE ligature
+        .replace(/æ/g, 'ae')      // ae ligature
+        .replace(/Ø/g, 'O')       // O with stroke
+        .replace(/ø/g, 'o')       // o with stroke
+        .replace(/å/g, 'a')       // a with ring
+        .replace(/Å/g, 'A')       // A with ring
+        .replace(/œ/g, 'oe')      // oe ligature
+        .replace(/Œ/g, 'OE')      // OE ligature
+        .replace(/‰/g, '%%')      // Per mille sign
+        .replace(/€/g, 'EUR')     // Euro sign
+        .replace(/¥/g, 'YEN')     // Yen sign
+        .replace(/£/g, 'GBP')     // Pound sign
+        .replace(/©/g, '(c)')     // Copyright sign
+        .replace(/®/g, '(R)')     // Registered trademark sign
+        .replace(/™/g, 'TM')      // Trademark sign
+        .replace(/¡/g, '!')       // Inverted exclamation mark
+        .replace(/¿/g, '?')       // Inverted question mark
+        .replace(/±/g, '+-')      // Plus-minus sign
+        .replace(/µ/g, 'u')       // Micro sign
+        .replace(/¶/g, 'P');      // Pilcrow sign
+}
+
 function runCustom(evt) {
-	evt.preventDefault();
-	getSettings.call(this);
-	var fields = getFormFields(this);
-	if(storageAvailable('localStorage')) {
-		localStorage.custom = fields.drill
-	}
-	if(fields.shuffleLines) {
-		// Don't shuffle words.
-		delete(fields.type);
-		// Pre-shuffle lines.
-		fields.drill = shuffle(fields.drill.trim().split(/\n+/m)).join(' ');
-	}
-	let drill =  fields.drill.trim().split(/\s+/m);
-	let n = +fields.repeat || 1;
-	TypeJig.WordSets.custom = [];
-	for(let i=0; i<n; ++i) TypeJig.WordSets.custom.push(...drill);
-	fields.drill = 'custom';
-	var jig = runExercise(fields);
+    evt.preventDefault();
+    getSettings.call(this);
+    var fields = getFormFields(this);
+
+    // Normalize the custom input text if the normalize checkbox is checked
+    if (document.getElementById('normalize').checked) {
+        fields.drill = normalizeToASCII(fields.drill);
+    }
+
+    if (storageAvailable('localStorage')) {
+        localStorage.custom = fields.drill;
+    }
+    if (fields.shuffleLines) {
+        // Don't shuffle words.
+            delete(fields.type);
+        // Pre-shuffle lines.
+            fields.drill = shuffle(fields.drill.trim().split(/\n+/m)).join(' ');
+    }
+
+    let drill = fields.drill.trim().split(/\s+/m);
+    let n = +fields.repeat || 1;
+    TypeJig.WordSets.custom = [];
+    for (let i = 0; i < n; ++i) TypeJig.WordSets.custom.push(...drill);
+    fields.drill = 'custom';
+    var jig = runExercise(fields);
 }
 
 window.onload = function() {
