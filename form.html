@@ -280,7 +280,7 @@ function runExercise(fields) {
 			if(fields.floating_hints) {
 				strokes.style.position = 'fixed';
 			}
-			var translations = fields.hint_style === "brief" ? TypeJig.shortestTranslations(TypeJig.Translations.Plover) : TypeJig.longestTranslations(TypeJig.Translations.Plover);
+			var translations = fields.hint_style === "brief" ? TypeJig.shortestTranslations(TypeJig.Translations.Lapwing) : TypeJig.longestTranslations(TypeJig.Translations.Lapwing);
 			var hints = new StenoDisplay(strokes, translations, true);
 		}
 		var options = fields;

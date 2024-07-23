@@ -38,7 +38,7 @@ for(var symStroke in emSymbols){ //Symbol rows / all symbols
 		var variantStroke = variants[i];
 		var stroke = "SKWHAO-"+variantStroke+symStroke;
 		emGenerated[stroke] = symbol;
-		TypeJig.Translations.Plover[symbol] = stroke;
+		TypeJig.Translations.Lapwing[symbol] = stroke;
 		emGeneratedKeyList.push(stroke);
 	}
 };
@@ -61,7 +61,7 @@ window.addEventListener('load', () => jig = loadExercisePage(args => {
 	const nwords = args.word_count==null ? 100 : parseInt(args.word_count)
 	//console.log(nwords + " symbols");
 	console.log("Strokes: ");
-	// console.log(TypeJig.Translations.Plover);
+	// console.log(TypeJig.Translations.Lapwing);
 	return {
 		generate: (rnd, options) => generate_exercise(nwords, rnd),
 		options: { name: "Emily's Symbol Dictionary" }

@@ -14,4 +14,5 @@ def key(k):
 
 inverse = {v: sorted(ks, key=key) for v, ks in inverse.items()}
 
-print(f'''TypeJig.Translations.Plover = {json.dumps(inverse)};''')
+with open("lapwing-translations.js", "w") as f:
+    f.write(f'TypeJig.Translations.Lapwing = {json.dumps(inverse)};')

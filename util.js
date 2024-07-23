@@ -62,7 +62,7 @@ function initializeHints(hints, floating_hints, hint_style) {
     if (floating_hints) {
         strokes.style.position = 'fixed';
     }
-    var translations = hint_style === "brief" ? TypeJig.shortestTranslations(TypeJig.Translations.Plover) : TypeJig.longestTranslations(TypeJig.Translations.Plover);
+    var translations = hint_style === "brief" ? TypeJig.shortestTranslations(TypeJig.Translations.Lapwing) : TypeJig.longestTranslations(TypeJig.Translations.Lapwing);
     return new StenoDisplay(strokes, translations, true);
 }
 
